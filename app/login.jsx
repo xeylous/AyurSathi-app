@@ -111,9 +111,6 @@ export default function LoginScreen() {
   const modes = [
     { value: 'user', label: 'User Login' },
     { value: 'farmer', label: 'Farmer Login' },
-    { value: 'lab', label: 'Lab Login' },
-    { value: 'manufacturer', label: 'Manufacturer Login' },
-    { value: 'admin', label: 'Admin Login' },
   ];
 
   const getModeLabel = () => {
@@ -127,12 +124,6 @@ export default function LoginScreen() {
         return 'Login to your User account';
       case 'farmer':
         return 'Login to your Farmer account';
-      case 'lab':
-        return 'Login to your Lab account';
-      case 'manufacturer':
-        return 'Login to your Manufacturer account';
-      case 'admin':
-        return 'Admin access panel';
       default:
         return 'Login to your account';
     }
@@ -144,8 +135,8 @@ export default function LoginScreen() {
       className="flex-1"
     >
       <ScrollView
-        className="flex-1 bg-[#f5f8cc]/50"
-        contentContainerStyle={{ paddingVertical: 40, paddingHorizontal: 16 }}
+        className="flex-1 bg-[#f5f8cc]/30"
+        contentContainerStyle={{ paddingVertical: 20, paddingHorizontal: 16 }}
         keyboardShouldPersistTaps="handled"
       >
         <View className="w-full max-w-md mx-auto bg-white rounded-xl shadow-lg p-8 min-h-[650px]">
@@ -302,7 +293,7 @@ export default function LoginScreen() {
                 onPress={() => router.push('/register')}
                 className="text-green-600 font-medium"
               >
-                Sign up
+                Register Here
               </Text>
             </Text>
           </View>

@@ -19,7 +19,7 @@ export default function GetStartedButton() {
       <TouchableOpacity style={styles.button}>
         <Text 
         style={styles.text}
-        onPress={() => router.push("/login")}
+        onPress={() => router.push("/register")}
         >
             GET STARTED</Text>
       </TouchableOpacity>
