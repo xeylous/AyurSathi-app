@@ -48,53 +48,57 @@ export default function RegisterScreen() {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSubmit = async () => {
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match!");
-      return;
-    }
+ const handleSubmit = async () => {
+  if (formData.password !== formData.confirmPassword) {
+    setError("Passwords do not match!");
+    return;
+  }
 
-    if (!formData.name || !formData.email || !formData.password) {
-      setError("Please fill all required fields.");
-      return;
-    }
+  if (!formData.name || !formData.email || !formData.password) {
+    setError("Please fill all required fields.");
+    return;
+  }
 
-    setError("");
-    setLoading(true);
+  setError("");
+  setLoading(true);
 
-    const { confirmPassword, ...safeData } = formData;
-    const payload = { ...safeData, type: mode };
+  const { confirmPassword, ...safeData } = formData;
+  const payload = { ...safeData, type: mode };
 
-    try {
-      const res = await fetch("https://yourapi.com/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
+  try {
+    const res = await fetch("https://ayur-sathi.vercel.app/api/mobile/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
 
-      if (!res.ok) {
-        setError(data?.error || data?.message || "Registration failed");
-        setLoading(false);
-        return;
-      }
+    const data = await res.json();
 
-      const id = data.userData.uniqueId;
-      setUniqueId(id);
-      setOtpModalOpen(true);
-    } catch (err) {
-      console.error("Register error:", err);
-      setError("Something went wrong. Please try again.");
-    } finally {
+    if (!res.ok) {
+      setError(data?.error || data?.message || "Registration failed");
       setLoading(false);
-      setFormData({
-        name: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-      });
+      return;
     }
-  };
+
+    // ✅ Get uniqueId from backend response
+    const id = data.userData.uniqueId;
+
+    // ✅ Navigate to OTP verification screen
+    router.push(`/otp/${id}`);
+
+  } catch (err) {
+    console.error("Register error:", err);
+    setError("Something went wrong. Please try again.");
+  } finally {
+    setLoading(false);
+    setFormData({
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    });
+  }
+};
 
   return (
     <ScrollView

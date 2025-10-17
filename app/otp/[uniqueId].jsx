@@ -10,10 +10,13 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 
-export default function OTPPage({ length = 6, uniqueId, onClose }) {
+export default function OTPPage() {
+  const { uniqueId } = useLocalSearchParams();
   const router = useRouter();
+
+  const length = 6;
   const [otp, setOtp] = useState(Array(length).fill(""));
   const [attemptsLeft, setAttemptsLeft] = useState(3);
   const [message, setMessage] = useState("");
@@ -22,7 +25,7 @@ export default function OTPPage({ length = 6, uniqueId, onClose }) {
   const [timer, setTimer] = useState(30);
   const inputsRef = useRef([]);
 
-  // Timer countdown
+  // ⏱ Timer countdown
   useEffect(() => {
     let interval;
     if (resendDisabled && timer > 0) {
@@ -34,11 +37,11 @@ export default function OTPPage({ length = 6, uniqueId, onClose }) {
     return () => clearInterval(interval);
   }, [resendDisabled, timer]);
 
-  // Send OTP when component loads
+  // 📩 Send OTP when component loads
   useEffect(() => {
     const sendOtp = async () => {
       try {
-        const res = await fetch(`https://yourapi.com/api/send-otp/${uniqueId}`, {
+        const res = await fetch(`https://ayur-sathi.vercel.app/api/mobile/send-otp/${uniqueId}`, {
           method: "POST",
         });
         const data = await res.json();
@@ -46,68 +49,83 @@ export default function OTPPage({ length = 6, uniqueId, onClose }) {
         setResendDisabled(true);
         setTimer(30);
       } catch {
-        setMessage("Failed to send OTP.");
+        setMessage("❌ Failed to send OTP.");
       }
     };
-    sendOtp();
+    if (uniqueId) sendOtp();
   }, [uniqueId]);
 
-  // Verify OTP
+  // ✅ Verify OTP
   const handleVerify = async () => {
     if (disabled) return;
     setDisabled(true);
     try {
-      const res = await fetch(`https://ayur-sathi.vercel.app/api/mobile/verify-otp/${uniqueId}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ otp: otp.join("") }),
-      });
+      const res = await fetch(
+        `https://ayur-sathi.vercel.app/api/mobile/verify-otp/${uniqueId}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ otp: otp.join("") }),
+        }
+      );
       const data = await res.json();
 
       if (res.ok) {
-        setMessage("✅ OTP verified successfully! Redirecting...");
-        setTimeout(() => router.push("/login"), 1500);
+        setMessage("✅ OTP verified successfully! Logging you in...");
+        // Automatically redirect to dashboard/home after successful verification
+        setTimeout(() => router.replace("/(tabs)/home"), 1500);
       } else {
         const remaining = attemptsLeft - 1;
         setAttemptsLeft(remaining);
         setDisabled(false);
         if (remaining > 0) {
-          setMessage(` Incorrect OTP. ${remaining} attempt(s) left.`);
+          setMessage(`❌ Incorrect OTP. ${remaining} attempt(s) left.`);
         } else {
-          setMessage(" Registration failed. Redirecting...");
-          setTimeout(() => router.push("/register"), 2000);
+          setMessage("❌ Registration failed. Redirecting...");
+          setTimeout(() => router.replace("/register"), 2000);
         }
       }
     } catch (err) {
       console.error(err);
-      setMessage(" Server error. Please try again.");
+      setMessage("⚠️ Server error. Please try again.");
       setDisabled(false);
     }
   };
 
-  // Handle OTP input
+  // 🔢 Handle OTP input
   const handleChange = (val, index) => {
-    if (/^\d?$/.test(val)) {
-      const newOtp = [...otp];
-      newOtp[index] = val;
-      setOtp(newOtp);
-      if (val && index < length - 1) {
-        inputsRef.current[index + 1]?.focus();
-      }
-    }
-  };
+  // Allow only digits or empty
+  if (/^\d?$/.test(val)) {
+    const newOtp = [...otp];
+    newOtp[index] = val;
+    setOtp(newOtp);
 
-  // Handle backspace navigation
+    // Auto move to next input (smooth focus)
+    if (val && index < length - 1) {
+      setTimeout(() => {
+        inputsRef.current[index + 1]?.focus();
+      }, 50);
+    }
+
+    // Auto submit if all digits filled
+    if (newOtp.every((d) => d !== "")) {
+      setTimeout(() => handleVerify(), 300);
+    }
+  }
+};
+
+
+  // ⌫ Handle backspace navigation
   const handleKeyPress = ({ nativeEvent }, index) => {
     if (nativeEvent.key === "Backspace" && !otp[index] && index > 0) {
       inputsRef.current[index - 1]?.focus();
     }
   };
 
-  // Resend OTP
+  // 🔁 Resend OTP
   const handleResend = async () => {
     try {
-      const res = await fetch(`https://yourapi.com/api/resend-otp/${uniqueId}`, {
+      const res = await fetch(`https://ayur-sathi.vercel.app/api/mobile/resend-otp/${uniqueId}`, {
         method: "POST",
       });
       const data = await res.json();
@@ -119,7 +137,7 @@ export default function OTPPage({ length = 6, uniqueId, onClose }) {
 
       setResendDisabled(true);
       setTimer(30);
-      setMessage(data.message || "OTP resent. Please check your email.");
+      setMessage(data.message || "📩 OTP resent. Please check your email.");
     } catch {
       setMessage("❌ Failed to resend OTP.");
     }
@@ -128,31 +146,23 @@ export default function OTPPage({ length = 6, uniqueId, onClose }) {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1 justify-center items-center bg-white rounded-2xl p-6"
+      className="flex-1 justify-center items-center bg-[#f5f8cc]/50 px-4"
     >
       <ScrollView
         contentContainerStyle={{ alignItems: "center", justifyContent: "center" }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Close Button */}
-        <TouchableOpacity
-          onPress={onClose}
-          className="absolute right-3 top-3 z-10"
-        >
-          <Text className="text-gray-500 text-xl">✕</Text>
-        </TouchableOpacity>
-
         {/* Logo + Title */}
         <View className="items-center mb-6 mt-6">
           <Image
-            source={require("../assets/images/logo.png")}
+            source={require("../../src/assets/images/logo.png")}
             className="h-12 w-12 rounded-lg"
           />
           <Text className="mt-3 text-2xl font-bold text-[#4F772D]">
             Verify Your Account
           </Text>
           <Text className="text-sm text-gray-500 text-center">
-            Enter the {length}-digit code sent to your email/phone
+            Enter the {length}-digit code sent to your email
           </Text>
         </View>
 
@@ -175,7 +185,7 @@ export default function OTPPage({ length = 6, uniqueId, onClose }) {
               keyboardType="numeric"
               maxLength={1}
               editable={!disabled}
-              className="w-12 h-14 text-center text-lg font-semibold border rounded-lg shadow-sm"
+              className="w-12 h-14 text-center text-lg font-semibold border border-gray-300 rounded-lg shadow-sm bg-white"
             />
           ))}
         </View>
@@ -194,7 +204,7 @@ export default function OTPPage({ length = 6, uniqueId, onClose }) {
             <ActivityIndicator color="#fff" />
           ) : (
             <Text className="text-white text-lg font-medium text-center">
-              Verify
+              Verify OTP
             </Text>
           )}
         </TouchableOpacity>
