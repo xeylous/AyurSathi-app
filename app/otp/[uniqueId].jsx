@@ -84,7 +84,7 @@ export default function OTPPage() {
           if (data.user.type === "farmer") {
             router.replace("/(farmer)/home");
           } else {
-            router.replace("/(user)/home");
+            router.replace("/(tabs)/home");
           }
         }, 1500);
       } else {
@@ -148,15 +148,15 @@ export default function OTPPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setMessage(data.error || "Failed to resend OTP.");
+        setMessage(data.error || "❌ Failed to resend OTP.");
         return;
       }
 
       setResendDisabled(true);
       setTimer(30);
-      setMessage(data.message || "OTP resent. Please check your email.");
+      setMessage(data.message || "📩 OTP resent. Please check your email.");
     } catch {
-      setMessage("Failed to resend OTP.");
+      setMessage("❌ Failed to resend OTP.");
     }
   };
 
