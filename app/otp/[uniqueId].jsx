@@ -41,9 +41,12 @@ export default function OTPPage() {
   useEffect(() => {
     const sendOtp = async () => {
       try {
-        const res = await fetch(`https://ayur-sathi.vercel.app/api/mobile/send-otp/${uniqueId}`, {
-          method: "POST",
-        });
+        const res = await fetch(
+          `https://ayur-sathi.vercel.app/api/mobile/send-otp/${uniqueId}`,
+          {
+            method: "POST",
+          }
+        );
         const data = await res.json();
         setMessage(data.message || "OTP sent to your email.");
         setResendDisabled(true);
@@ -59,6 +62,7 @@ export default function OTPPage() {
   const handleVerify = async () => {
     if (disabled) return;
     setDisabled(true);
+
     try {
       const res = await fetch(
         `https://ayur-sathi.vercel.app/api/mobile/verify-otp/${uniqueId}`,
@@ -68,16 +72,27 @@ export default function OTPPage() {
           body: JSON.stringify({ otp: otp.join("") }),
         }
       );
-      const data = await res.json();
 
+      const data = await res.json();
+      console.log(data);
+      
       if (res.ok) {
         setMessage("✅ OTP verified successfully! Logging you in...");
-        // Automatically redirect to dashboard/home after successful verification
-        setTimeout(() => router.replace("/(tabs)/home"), 1500);
+
+        // ✅ Redirect user automatically after success
+        setTimeout(() => {
+          if (data.user.type === "farmer") {
+            router.replace("/(farmer)/home");
+          } else {
+            router.replace("/(user)/home");
+          }
+        }, 1500);
       } else {
+        // ❌ OTP failed
         const remaining = attemptsLeft - 1;
         setAttemptsLeft(remaining);
         setDisabled(false);
+
         if (remaining > 0) {
           setMessage(`❌ Incorrect OTP. ${remaining} attempt(s) left.`);
         } else {
@@ -94,26 +109,25 @@ export default function OTPPage() {
 
   // 🔢 Handle OTP input
   const handleChange = (val, index) => {
-  // Allow only digits or empty
-  if (/^\d?$/.test(val)) {
-    const newOtp = [...otp];
-    newOtp[index] = val;
-    setOtp(newOtp);
+    // Allow only digits or empty
+    if (/^\d?$/.test(val)) {
+      const newOtp = [...otp];
+      newOtp[index] = val;
+      setOtp(newOtp);
 
-    // Auto move to next input (smooth focus)
-    if (val && index < length - 1) {
-      setTimeout(() => {
-        inputsRef.current[index + 1]?.focus();
-      }, 50);
+      // Auto move to next input (smooth focus)
+      if (val && index < length - 1) {
+        setTimeout(() => {
+          inputsRef.current[index + 1]?.focus();
+        }, 50);
+      }
+
+      // Auto submit if all digits filled
+      if (newOtp.every((d) => d !== "")) {
+        setTimeout(() => handleVerify(), 300);
+      }
     }
-
-    // Auto submit if all digits filled
-    if (newOtp.every((d) => d !== "")) {
-      setTimeout(() => handleVerify(), 300);
-    }
-  }
-};
-
+  };
 
   // ⌫ Handle backspace navigation
   const handleKeyPress = ({ nativeEvent }, index) => {
@@ -125,21 +139,24 @@ export default function OTPPage() {
   // 🔁 Resend OTP
   const handleResend = async () => {
     try {
-      const res = await fetch(`https://ayur-sathi.vercel.app/api/mobile/resend-otp/${uniqueId}`, {
-        method: "POST",
-      });
+      const res = await fetch(
+        `https://ayur-sathi.vercel.app/api/mobile/resend-otp/${uniqueId}`,
+        {
+          method: "POST",
+        }
+      );
       const data = await res.json();
 
       if (!res.ok) {
-        setMessage(data.error || "❌ Failed to resend OTP.");
+        setMessage(data.error || "Failed to resend OTP.");
         return;
       }
 
       setResendDisabled(true);
       setTimer(30);
-      setMessage(data.message || "📩 OTP resent. Please check your email.");
+      setMessage(data.message || "OTP resent. Please check your email.");
     } catch {
-      setMessage("❌ Failed to resend OTP.");
+      setMessage("Failed to resend OTP.");
     }
   };
 
@@ -149,7 +166,10 @@ export default function OTPPage() {
       className="flex-1 justify-center items-center bg-[#f5f8cc]/50 px-4"
     >
       <ScrollView
-        contentContainerStyle={{ alignItems: "center", justifyContent: "center" }}
+        contentContainerStyle={{
+          alignItems: "center",
+          justifyContent: "center",
+        }}
         showsVerticalScrollIndicator={false}
       >
         {/* Logo + Title */}
