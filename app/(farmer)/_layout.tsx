@@ -1,24 +1,25 @@
 import React from "react";
 import { Tabs } from "expo-router";
 import { View, Text } from "react-native";
-import { Ionicons } from "@expo/vector-icons"; // ✅ install if not already: npm install @expo/vector-icons
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarShowLabel: true,
+        // navigationBarHidden: true,
+        tabBarShowLabel: false,
         tabBarActiveTintColor: "#4F772D",
         tabBarInactiveTintColor: "#A0A0A0",
         tabBarStyle: {
           position: "absolute",
-          bottom: 16,
+          bottom: 0,
           left: 16,
           right: 16,
           height: 70,
           borderRadius: 20,
-          backgroundColor: "#FFFFFF",
+          backgroundColor: "#90A955",
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 4 },
           shadowOpacity: 0.1,
@@ -26,62 +27,100 @@ export default function TabLayout() {
           elevation: 5,
           borderTopWidth: 0,
         },
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: "600",
-          marginBottom: 6,
-        },
       }}
     >
-      {/* 🏠 Home Tab */}
+      {/* Upload Crop */}
       <Tabs.Screen
-        name="home"
+        name="upload-crop"
         options={{
-          title: "Home",
+          title: "Upload Crop",
           tabBarIcon: ({ color, focused }) => (
-            <View className="items-center">
-              <Ionicons
-                name={focused ? "home" : "home-outline"}
-                size={24}
-                color={color}
+            <View className="items-center justify-center mt-4">
+              <MaterialCommunityIcons
+                name={focused ? "sprout" : "sprout-outline"}
+                size={26}
+                // color={color}
+                color={focused ? "#a5cd83" : "#ffffff"}
               />
-              <Text style={{ fontSize: 10, color }}>{focused ? "Home" : ""}</Text>
+              <Text
+                className={`text-[10px] mt-1 ${
+                  focused ? "text-[#000000]" : "text-gray-400"
+                }`}
+              >
+                Upload
+              </Text>
             </View>
           ),
         }}
       />
 
-      {/* 👤 Profile Tab */}
+      {/* Crop History */}
       <Tabs.Screen
-        name="profile"
+        name="crop-history"
         options={{
-          title: "Profile",
+          title: "Crop History",
           tabBarIcon: ({ color, focused }) => (
-            <View className="items-center">
+            <View className="items-center justify-center">
               <Ionicons
-                name={focused ? "person" : "person-outline"}
+                name={focused ? "time" : "time-outline"}
                 size={24}
                 color={color}
               />
-              <Text style={{ fontSize: 10, color }}>{focused ? "Profile" : ""}</Text>
+              <Text
+                className={`text-[10px] mt-1 ${
+                  focused ? "text-[#4F772D]" : "text-gray-400"
+                }`}
+              >
+                History
+              </Text>
             </View>
           ),
         }}
       />
 
-      {/* ⚙️ Settings Tab */}
+      {/* Marketplace */}
       <Tabs.Screen
-        name="settings"
+        name="marketplace"
         options={{
-          title: "Settings",
+          title: "Marketplace",
           tabBarIcon: ({ color, focused }) => (
-            <View className="items-center">
+            <View className="items-center justify-center">
               <Ionicons
-                name={focused ? "settings" : "settings-outline"}
+                name={focused ? "storefront" : "storefront-outline"}
                 size={24}
                 color={color}
               />
-              <Text style={{ fontSize: 10, color }}>{focused ? "Settings" : ""}</Text>
+              <Text
+                className={`text-[10px] mt-1 ${
+                  focused ? "text-[#4F772D]" : "text-gray-400"
+                }`}
+              >
+                Market
+              </Text>
+            </View>
+          ),
+        }}
+      />
+
+      {/* Cart */}
+      <Tabs.Screen
+        name="cart"
+        options={{
+          title: "Cart",
+          tabBarIcon: ({ color, focused }) => (
+            <View className="items-center justify-center">
+              <Ionicons
+                name={focused ? "cart" : "cart-outline"}
+                size={24}
+                color={color}
+              />
+              <Text
+                className={`text-[10px] mt-1 ${
+                  focused ? "text-[#4F772D]" : "text-gray-400"
+                }`}
+              >
+                Cart
+              </Text>
             </View>
           ),
         }}

@@ -13,15 +13,15 @@ export default function GetStartedButton() {
         styles.container,
         {
           paddingBottom: insets.bottom,
-        }
+        },
       ]}
     >
-      <TouchableOpacity style={styles.button}>
-        <Text 
-        style={styles.text}
+      <TouchableOpacity
+        style={styles.button}
+        activeOpacity={0.8}
         onPress={() => router.push("/register")}
-        >
-            GET STARTED</Text>
+      >
+        <Text style={styles.text}>GET STARTED</Text>
       </TouchableOpacity>
     </View>
   );
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: "#8fa854", // blue-300
+    backgroundColor: "#8fa854", // light greenish tone
     height: 60,
     flexDirection: "row",
     alignItems: "center",
