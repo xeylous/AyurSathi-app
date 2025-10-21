@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -10,28 +10,28 @@ import {
   Platform,
   Modal,
   Pressable,
-} from 'react-native';
-import { Eye, EyeOff, ChevronDown } from 'lucide-react-native';
-import { useRouter } from 'expo-router';
-import { useAuth } from '.././src/contexts/AuthContext';
-import Toast from 'react-native-toast-message';
+} from "react-native";
+import { Eye, EyeOff, ChevronDown } from "lucide-react-native";
+import { useRouter } from "expo-router";
+import { useAuth } from ".././src/contexts/AuthContext";
+import Toast from "react-native-toast-message";
 
 export default function LoginScreen() {
   const { setUser } = useAuth();
   const router = useRouter();
-  const [mode, setMode] = useState('user');
-  const [email, setEmail] = useState('');
-  const [userId, setUserId] = useState('');
-  const [password, setPassword] = useState('');
+  const [mode, setMode] = useState("user");
+  const [email, setEmail] = useState("");
+  const [userId, setUserId] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
 
   // Reset fields when switching mode
   useEffect(() => {
-    setEmail('');
-    setUserId('');
-    setPassword('');
+    setEmail("");
+    setUserId("");
+    setPassword("");
     setShowPassword(false);
     setIsSubmitting(false);
   }, [mode]);
@@ -41,18 +41,18 @@ export default function LoginScreen() {
     setIsSubmitting(true);
 
     // Admin Login (local validation)
-    if (mode === 'admin') {
-      if (email === 'risuraj162@gmail.com' && password === '1234') {
+    if (mode === "admin") {
+      if (email === "risuraj162@gmail.com" && password === "1234") {
         Toast.show({
-          type: 'success',
-          text1: 'Admin login successful',
+          type: "success",
+          text1: "Admin login successful",
           visibilityTime: 1500,
         });
-        setTimeout(() => router.push('/admin'), 800);
+        setTimeout(() => router.push("/admin"), 800);
       } else {
         Toast.show({
-          type: 'error',
-          text1: 'Invalid admin credentials',
+          type: "error",
+          text1: "Invalid admin credentials",
           visibilityTime: 1500,
         });
         setTimeout(() => setIsSubmitting(false), 1500);
@@ -64,9 +64,9 @@ export default function LoginScreen() {
     const payload = { email, password, type: mode };
 
     try {
-      const res = await fetch('YOUR_API_URL/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("https://ayur-sathi.vercel.app/api/mobile/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
@@ -74,14 +74,15 @@ export default function LoginScreen() {
 
       if (!res.ok) {
         Toast.show({
-          type: 'error',
-          text1: data.error || 'Wrong credentials',
+          type: "error",
+          text1: data.error || "Wrong credentials",
           visibilityTime: 1500,
         });
         setTimeout(() => setIsSubmitting(false), 1500);
         return;
       }
 
+      // ✅ Store user in context
       setUser({
         name: data.account.name,
         labId: data.account.labId || null,
@@ -92,16 +93,26 @@ export default function LoginScreen() {
       });
 
       Toast.show({
-        type: 'success',
-        text1: 'Login successful',
+        type: "success",
+        text1: "Login successful",
         visibilityTime: 1500,
       });
-      setTimeout(() => router.push(data.redirectUrl), 500);
+
+      // ✅ Redirect based on user type
+      setTimeout(() => {
+        if (mode === "farmer") {
+          router.push("/(farmer)/upload-crop");
+        } else if (mode === "user") {
+          router.push("/(user)/home");
+        } else {
+          router.push("/"); // fallback
+        }
+      }, 600);
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
       Toast.show({
-        type: 'error',
-        text1: 'Something went wrong. Please try again',
+        type: "error",
+        text1: "Something went wrong. Please try again",
         visibilityTime: 1500,
       });
       setTimeout(() => setIsSubmitting(false), 1500);
@@ -109,29 +120,29 @@ export default function LoginScreen() {
   };
 
   const modes = [
-    { value: 'user', label: 'User Login' },
-    { value: 'farmer', label: 'Farmer Login' },
+    { value: "user", label: "User Login" },
+    { value: "farmer", label: "Farmer Login" },
   ];
 
   const getModeLabel = () => {
     const modeObj = modes.find((m) => m.value === mode);
-    return modeObj ? modeObj.label : 'User Login';
+    return modeObj ? modeObj.label : "User Login";
   };
 
   const getModeDescription = () => {
     switch (mode) {
-      case 'user':
-        return 'Login to your User account';
-      case 'farmer':
-        return 'Login to your Farmer account';
+      case "user":
+        return "Login to your User account";
+      case "farmer":
+        return "Login to your Farmer account";
       default:
-        return 'Login to your account';
+        return "Login to your account";
     }
   };
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
       className="flex-1"
     >
       <ScrollView
@@ -143,7 +154,7 @@ export default function LoginScreen() {
           {/* Logo + Title */}
           <View className="flex items-center mb-6">
             <Image
-              source={require('../src/assets/images/logo.png')}
+              source={require("../src/assets/images/logo.png")}
               className="h-12 w-12 rounded-lg"
               resizeMode="cover"
             />
@@ -202,7 +213,7 @@ export default function LoginScreen() {
             {/* Email / Username */}
             <View>
               <Text className="text-sm font-medium text-gray-700 mb-1">
-                {mode === 'admin' ? 'Admin Username' : 'Email Address'}
+                {mode === "admin" ? "Admin Username" : "Email Address"}
               </Text>
               <TextInput
                 value={email}
@@ -210,7 +221,7 @@ export default function LoginScreen() {
                 keyboardType="email-address"
                 autoCapitalize="none"
                 placeholder={
-                  mode === 'admin' ? 'Enter admin username' : 'you@example.com'
+                  mode === "admin" ? "Enter admin username" : "you@example.com"
                 }
                 className="w-full px-3 py-3 rounded-md border border-gray-300 bg-white"
               />
@@ -247,12 +258,14 @@ export default function LoginScreen() {
               onPress={handleSubmit}
               disabled={isSubmitting}
               className={`w-full py-3 rounded-md shadow-lg ${
-                isSubmitting ? 'bg-gray-400' : 'bg-[#90a955] active:bg-[#4F772D]'
+                isSubmitting
+                  ? "bg-gray-400"
+                  : "bg-[#90a955] active:bg-[#4F772D]"
               }`}
             >
               <Text className="text-white text-lg font-medium text-center">
                 {isSubmitting
-                  ? 'Logging in...'
+                  ? "Logging in..."
                   : `Login as ${mode.charAt(0).toUpperCase() + mode.slice(1)}`}
               </Text>
             </TouchableOpacity>
@@ -269,8 +282,8 @@ export default function LoginScreen() {
           <TouchableOpacity
             onPress={() =>
               Toast.show({
-                type: 'info',
-                text1: 'Google Auth coming soon!!',
+                type: "info",
+                text1: "Google Auth coming soon!!",
                 visibilityTime: 1500,
               })
             }
@@ -278,7 +291,7 @@ export default function LoginScreen() {
           >
             <Image
               source={{
-                uri: 'https://www.svgrepo.com/show/355037/google.svg',
+                uri: "https://www.svgrepo.com/show/355037/google.svg",
               }}
               className="w-5 h-5 mr-2"
             />
@@ -288,9 +301,9 @@ export default function LoginScreen() {
           {/* Footer */}
           <View className="mt-6">
             <Text className="text-center text-sm text-gray-600">
-              Don&#39;t have an account?{' '}
+              Don&#39;t have an account?{" "}
               <Text
-                onPress={() => router.push('/register')}
+                onPress={() => router.push("/register")}
                 className="text-green-600 font-medium"
               >
                 Register Here

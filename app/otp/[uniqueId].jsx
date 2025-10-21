@@ -75,20 +75,19 @@ export default function OTPPage() {
 
       const data = await res.json();
       console.log(data);
-      
+
       if (res.ok) {
         setMessage("✅ OTP verified successfully! Logging you in...");
 
-        // ✅ Redirect user automatically after success
         setTimeout(() => {
-          if (data.user.type === "farmer") {
+          const userType = data.account?.type; 
+          if (userType === "farmer") {
             router.replace("/(farmer)/home");
           } else {
             router.replace("/(tabs)/home");
           }
         }, 1500);
       } else {
-        // ❌ OTP failed
         const remaining = attemptsLeft - 1;
         setAttemptsLeft(remaining);
         setDisabled(false);
@@ -109,22 +108,18 @@ export default function OTPPage() {
 
   // 🔢 Handle OTP input
   const handleChange = (val, index) => {
-    // Allow only digits or empty
     if (/^\d?$/.test(val)) {
       const newOtp = [...otp];
       newOtp[index] = val;
       setOtp(newOtp);
 
-      // Auto move to next input (smooth focus)
+      // Move to next input after typing
       if (val && index < length - 1) {
         setTimeout(() => {
-          inputsRef.current[index + 1]?.focus();
-        }, 50);
-      }
-
-      // Auto submit if all digits filled
-      if (newOtp.every((d) => d !== "")) {
-        setTimeout(() => handleVerify(), 300);
+          if (inputsRef.current[index + 1]) {
+            inputsRef.current[index + 1].focus();
+          }
+        }, 100); // small delay helps React update refs first
       }
     }
   };
