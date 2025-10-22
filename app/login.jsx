@@ -87,7 +87,7 @@ export default function LoginScreen() {
         name: data.account.name,
         labId: data.account.labId || null,
         email: data.account.email || null,
-        userId: data.account.userId || null,
+        // userId: data.account.userId || null,
         uniqueId: data.account.uniqueId || null,
         type: data.account.type,
       });
