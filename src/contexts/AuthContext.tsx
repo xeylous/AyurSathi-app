@@ -8,6 +8,7 @@ export interface User {
   name: string;
   email: string;
   role?: "farmer" | "user" | "admin";
+  uniqueId?: string;
   // add more fields if needed
 }
 
