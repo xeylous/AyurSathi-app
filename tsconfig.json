@@ -15,5 +15,5 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "nativewind-env.d.ts"
-, "app/(user)/home.jsx", "app/(farmer)/upload-crop.jsx", "app/(farmer)/crop-history.jsx"  ]
+, "app/(user)/home.jsx", "app/(farmer)/upload-crop.jsx", "app/(farmer)/crop-history.jsx", "app/(farmer)/marketplace.jsx", "app/(farmer)/cart.jsx"  ]
 }

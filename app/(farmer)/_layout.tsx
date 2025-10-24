@@ -35,16 +35,17 @@ export default function TabLayout() {
         options={{
           title: "Upload Crop",
           tabBarIcon: ({ color, focused }) => (
-            <View className="items-center justify-center mt-4">
+            <View className="items-center justify-center mt-3">
               <MaterialCommunityIcons
                 name={focused ? "sprout" : "sprout-outline"}
                 size={26}
                 // color={color}
                 color={focused ? "#a5cd83" : "#ffffff"}
+                // style={{ border: focused ? "2px solid #4F772D" : "none" }}
               />
               <Text
-                className={`text-[10px] mt-1 ${
-                  focused ? "text-[#000000]" : "text-gray-400"
+                className={`text-[10px] font-bold mt-1 ${
+                  focused ? "text-[#000000]" : "text-black"
                 }`}
               >
                 Upload
@@ -60,15 +61,16 @@ export default function TabLayout() {
         options={{
           title: "Crop History",
           tabBarIcon: ({ color, focused }) => (
-            <View className="items-center justify-center">
+            <View className="items-center justify-center mt-3">
               <Ionicons
                 name={focused ? "time" : "time-outline"}
                 size={24}
-                color={color}
+                color={focused ? "#a5cd83" : "#ffffff"}
+                // style={{ border: focused ? "2px solid #4F772D" : "none" }}
               />
               <Text
-                className={`text-[10px] mt-1 ${
-                  focused ? "text-[#4F772D]" : "text-gray-400"
+                className={`text-[10px] font-bold mt-1 ${
+                  focused ? "text-[#000000]" : "text-black"
                 }`}
               >
                 History
@@ -84,15 +86,15 @@ export default function TabLayout() {
         options={{
           title: "Marketplace",
           tabBarIcon: ({ color, focused }) => (
-            <View className="items-center justify-center">
+            <View className="items-center justify-center mt-3">
               <Ionicons
                 name={focused ? "storefront" : "storefront-outline"}
                 size={24}
-                color={color}
+                color={focused ? "#a5cd83" : "#ffffff"}
               />
               <Text
                 className={`text-[10px] mt-1 ${
-                  focused ? "text-[#4F772D]" : "text-gray-400"
+                  focused ? "text-[#000000]" : "text-black"
                 }`}
               >
                 Market
@@ -108,15 +110,15 @@ export default function TabLayout() {
         options={{
           title: "Cart",
           tabBarIcon: ({ color, focused }) => (
-            <View className="items-center justify-center">
+            <View className="items-center justify-center mt-3">
               <Ionicons
                 name={focused ? "cart" : "cart-outline"}
                 size={24}
-                color={color}
+                color={focused ? "#a5cd83" : "#ffffff"}
               />
               <Text
                 className={`text-[10px] mt-1 ${
-                  focused ? "text-[#4F772D]" : "text-gray-400"
+                  focused ? "text-[#000000]" : "text-black"
                 }`}
               >
                 Cart
