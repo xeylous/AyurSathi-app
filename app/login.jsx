@@ -85,11 +85,12 @@ export default function LoginScreen() {
       // ✅ Store user in context
       setUser({
         name: data.account.name,
-        labId: data.account.labId || null,
+        // labId: data.account.labId || null,
         email: data.account.email || null,
         // userId: data.account.userId || null,
         uniqueId: data.account.uniqueId || null,
         type: data.account.type,
+        verified : data.account.verified || false,
       });
 
       Toast.show({

@@ -31,6 +31,7 @@ export default function UploadCrop() {
           type: "error",
           text1: "Permission denied",
           text2: "Please enable location access.",
+          visibilityTime: 4000,
         });
         setLoadingLocation(false);
         return;
@@ -44,12 +45,14 @@ export default function UploadCrop() {
       Toast.show({
         type: "success",
         text1: "Location fetched successfully!",
+        visibilityTime: 4000,
       });
     } catch (err) {
       console.error(err);
       Toast.show({
         type: "error",
         text1: "Error getting location",
+        visibilityTime: 4000,
       });
     } finally {
       setLoadingLocation(false);
@@ -62,6 +65,7 @@ const handleSubmit = async () => {
     Toast.show({
       type: "error",
       text1: "Please fill all fields and fetch location.",
+      visibilityTime: 4000,
     });
     return;
   }
@@ -75,15 +79,15 @@ const handleSubmit = async () => {
     Toast.show({
       type: "error",
       text1: "Invalid crop selected.",
+      visibilityTime: 4000,
     });
     return;
   }
-
+const cropName = cropDetails.name;
   // Construct clean payload
   const payload = {
     uniqueId: user?.uniqueId || null, // make sure uniqueId is defined or passed as prop
     speciesId: cropDetails.speciesId,
-    // cropName: cropDetails.name,
     quantity: parseFloat(quantity),
     gpsCoordinates: {
       latitude: location.latitude,
@@ -122,7 +126,8 @@ console.log(payload);
 
     Toast.show({
       type: "success",
-      text1: `${payload.cropName} uploaded successfully!`,
+      text1: `${cropName} uploaded successfully!`,
+      visibilityTime: 4000,
     });
 
     console.log("✅ Sent payload:", payload);
