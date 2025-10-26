@@ -2,9 +2,12 @@ import React from "react";
 import { Tabs } from "expo-router";
 import { View, Text } from "react-native";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+// import Navbar from "../../src/components/farmer/Navbar";
 
 export default function TabLayout() {
   return (
+    <>
+    {/* <Navbar /> */}
     <Tabs
       screenOptions={{
         headerShown: false,
@@ -128,5 +131,6 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
+    </>
   );
 }
