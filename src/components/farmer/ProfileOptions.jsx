@@ -6,11 +6,11 @@ import { useRouter } from "expo-router";
 import AdditionalSetting from "./AdditionalSetting";
 
 const options = [
-  { id: 1, title: "Edit Profile", route: "/edit-profile" },
-  { id: 2, title: "My Address", route: "/my-address" },
-  { id: 3, title: "Appearance", route: "/logout" },
-  { id: 4, title: "Feedback", route: "/feedback" },
-  { id: 5, title: "Raise a Complaint", route: "/complaint" },
+  { id: 1, title: "Edit Profile", route: "/farmer/EditProfile" },
+  { id: 2, title: "My Address", route: "/farmer/MyAddress" },
+  { id: 3, title: "Appearance", route: "/farmer/Appearance" },
+  { id: 4, title: "Feedback", route: "/farmer/Feedback" },
+  { id: 5, title: "Raise a Complaint", route: "/farmer/Complaint" },
 ];
 
 const ProfileOptions = () => {
