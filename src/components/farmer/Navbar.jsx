@@ -8,7 +8,7 @@ const Navbar = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const isProfileActive = pathname === "/profile";
+const isProfileActive = ["/profile", "/farmer/EditProfile", "/farmer/MyAddress"].includes(pathname);
   const isSearchActive = pathname === "/search";
 
   const handleSearchPress = () => {
