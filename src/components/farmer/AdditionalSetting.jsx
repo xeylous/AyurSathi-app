@@ -5,9 +5,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 
 const options = [
-  { id: 1, title: "Settings", route: "/edit-profile" },
-  { id: 2, title: "Help", route: "/my-address" },
-  { id: 3, title: "Logout", route: "/complaint" },
+  { id: 1, title: "Settings", route: "/farmer/Settings" },
+  { id: 2, title: "Help", route: "https://ayur-sathi.vercel.app/" },
+  { id: 3, title: "Logout", route: "/farmer/Logout" },
 ];
 
 const AdditionalSetting = () => {

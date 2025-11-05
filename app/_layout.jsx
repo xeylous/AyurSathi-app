@@ -3,27 +3,31 @@ import { Stack } from "expo-router";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AuthProvider, useAuth } from "../src/contexts/AuthContext";
 import { CropProvider } from "../src/contexts/CropContext";
+import Toast from "react-native-toast-message"; // ✅ Add Toast here
 
 // ✅ import both navbars
 import NormalNavbar from "../src/components/Navbar";
 import FarmerNavbar from "../src/components/farmer/Navbar";
 
-// ✅ A subcomponent so we can access Auth context
 function RootNavigator() {
   const { user } = useAuth();
 
-  // if user is logged in → use Farmer Navbar
   const ActiveNavbar = user ? FarmerNavbar : NormalNavbar;
 
   return (
-    <Stack
-      screenOptions={{
-        headerShown: true,
-        header: () => <ActiveNavbar />,
-        navigationBarHidden: true,
-        contentStyle: { backgroundColor: "#ECF39E" },
-      }}
-    />
+    <>
+      <Stack
+        screenOptions={{
+          headerShown: true,
+          header: () => <ActiveNavbar />,
+          navigationBarHidden: true,
+          contentStyle: { backgroundColor: "#ECF39E" },
+        }}
+      />
+
+      {/* ✅ Toast MUST be inside Provider area */}
+      <Toast />
+    </>
   );
 }
 

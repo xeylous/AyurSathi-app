@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { Leaf, Shield, Users, QrCode, TrendingUp, Award } from "lucide-react-native";
-import { useRouter } from "expo-router";
+// import { useRouter } from "expo-router";
 
 const features = [
   {
@@ -10,7 +10,7 @@ const features = [
     title: "Verify Products",
     description: "Scan QR codes to check authenticity",
     color: "#166534",
-    route: "/scan-history",
+    // route: "/scan-history",
   },
   {
     id: 2,
@@ -18,7 +18,7 @@ const features = [
     title: "Track Journey",
     description: "See herb's farm-to-consumer path",
     color: "#15803d",
-    route: "/track",
+    // route: "/track",
   },
   {
     id: 3,
@@ -26,7 +26,7 @@ const features = [
     title: "Fair Marketplace",
     description: "Support farmers with fair prices",
     color: "#166534",
-    route: "/marketplace",
+    // route: "/marketplace",
   },
   {
     id: 4,
@@ -34,7 +34,7 @@ const features = [
     title: "Batch Search",
     description: "Search products by batch number",
     color: "#14532d",
-    route: "/batch-search",
+    // route: "/batch-search",
   },
   {
     id: 5,
@@ -42,7 +42,7 @@ const features = [
     title: "Supply Insights",
     description: "View supply chain analytics",
     color: "#15803d",
-    route: "/insights",
+    // route: "/insights",
   },
   {
     id: 6,
@@ -50,16 +50,16 @@ const features = [
     title: "Certifications",
     description: "Check quality certifications",
     color: "#166534",
-    route: "/certifications",
+    // route: "/certifications",
   },
 ];
 
 const FeaturesGrid = () => {
-  const router = useRouter();
+  // const router = useRouter();
 
-  const handleFeaturePress = (route) => {
-    router.push(route);
-  };
+  // const handleFeaturePress = (route) => {
+  //   router.push(route);
+  // };
 
   return (
     <View className="px-4 py-4 bg-[#ECF39E]/30">
@@ -87,7 +87,7 @@ const FeaturesGrid = () => {
           return (
             <TouchableOpacity
               key={feature.id}
-              onPress={() => handleFeaturePress(feature.route)}
+              // onPress={() => handleFeaturePress(feature.route)}
               activeOpacity={0.8}
               style={{
                 width: 180,

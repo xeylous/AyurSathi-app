@@ -7,12 +7,15 @@ const CropContext = createContext();
 export const CropProvider = ({ children }) => {
   const [cropHistory, setCropHistory] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
-  const [fetchedOnce, setFetchedOnce] = useState(false); // ✅ to avoid re-fetch
+  const [fetchedOnce, setFetchedOnce] = useState(false);
 
-  // ✅ Fetch crops from backend
+  const clearCropData = () => {
+    setCropHistory([]); // ✅ Clears crop data
+    setFetchedOnce(false);
+  };
+
   const fetchCropHistory = async (uniqueId) => {
     if (!uniqueId || isFetching) return;
-
     try {
       setIsFetching(true);
       const res = await fetch(
@@ -58,6 +61,7 @@ export const CropProvider = ({ children }) => {
         fetchCropHistory,
         isFetching,
         fetchedOnce,
+        clearCropData, // ✅ ADDED HERE
       }}
     >
       {children}
@@ -66,3 +70,5 @@ export const CropProvider = ({ children }) => {
 };
 
 export const useCrops = () => useContext(CropContext);
+
+export default CropContext;
