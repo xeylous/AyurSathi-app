@@ -35,7 +35,7 @@ export default function CropHistory() {
 
   return (
     <ScrollView
-      className="flex-1 bg-[#f5f8cc]/30"
+      className="flex-1 bg-[#f5f8cc]/30 mb-20"
       contentContainerStyle={{ padding: 16 }}
     >
       <View className="bg-white rounded-2xl shadow p-6 mb-4">

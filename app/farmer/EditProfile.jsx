@@ -6,8 +6,12 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform
 } from "react-native";
 import Toast from "react-native-toast-message";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+
 
 export default function FarmerProfile() {
 
@@ -138,126 +142,134 @@ export default function FarmerProfile() {
     setIsEditing(false);
   };
 
-  return (
-    <ScrollView
-      className="flex-1 bg-[#ECF39E]"
-      contentContainerStyle={{ padding: 20 }}
-      showsVerticalScrollIndicator={false}
-    >
-      <View className="bg-white rounded-3xl shadow-md p-6">
-        <Text className="text-3xl font-bold text-center mb-6 text-[#31572C]">
-          Farmer Profile
-        </Text>
+return (
+  <KeyboardAwareScrollView
+  className="flex-1 bg-[#ECF39E]"
+  contentContainerStyle={{
+    padding: 20,
+    paddingBottom: 250, // ✅ add space so scroll works
+  }}
+  showsVerticalScrollIndicator={false}
+  enableOnAndroid={true}
+  enableAutomaticScroll={true}
+  extraScrollHeight={120} // ✅ smoother scroll
+  keyboardShouldPersistTaps="handled"
+>
+    <View className="bg-white rounded-3xl shadow-md p-6">
+      <Text className="text-3xl font-bold text-center mb-6 text-[#31572C]">
+        Farmer Profile
+      </Text>
 
-        {/* Full Name */}
-        <View className="mb-4">
-          <Text className="text-[#31572C] font-medium">Full Name</Text>
-          <TextInput
-            value={farmer.fullName}
-            onChangeText={(text) => handleChange("fullName", text)}
-            editable={isEditing}
-            placeholder="Enter full name"
-            className={`border-b-2 ${
-              isEditing ? "border-[#90A955]" : "border-gray-300"
-            } p-2 text-base ${!isEditing ? "text-gray-500" : ""}`}
-            placeholderTextColor="#888"
-          />
-        </View>
-
-        {/* Phone */}
-        <View className="mb-4">
-          <Text className="text-[#31572C] font-medium">Phone Number</Text>
-          <TextInput
-            value={farmer.phone}
-            onChangeText={(text) => handleChange("phone", text)}
-            editable={isEditing}
-            placeholder="Enter phone number"
-            keyboardType="phone-pad"
-            className={`border-b-2 ${
-              isEditing ? "border-[#90A955]" : "border-gray-300"
-            } p-2 text-base ${!isEditing ? "text-gray-500" : ""}`}
-            placeholderTextColor="#888"
-          />
-        </View>
-
-        {/* Email */}
-        <View className="mb-4">
-          <Text className="text-[#31572C] font-medium">Email</Text>
-          <TextInput
-            value={farmer.email}
-            editable={false}
-            className="border-b-2 border-gray-300 p-2 text-base text-gray-500"
-          />
-        </View>
-
-        {/* Pin Code */}
-        <View className="mb-4">
-          <Text className="text-[#31572C] font-medium">Pin Code</Text>
-          <TextInput
-            value={farmer.pinCode}
-            onChangeText={(text) => handleChange("pinCode", text)}
-            editable={isEditing}
-            keyboardType="numeric"
-            placeholder="Enter 6-digit pin code"
-            maxLength={6} // ✅ restricts typing beyond 6 digits
-            className={`border-b-2 ${
-              isEditing ? "border-[#90A955]" : "border-gray-300"
-            } p-2 text-base ${!isEditing ? "text-gray-500" : ""}`}
-            placeholderTextColor="#888"
-          />
-        </View>
-
-        {/* Address */}
-        <View className="mb-6">
-          <Text className="text-[#31572C] font-medium">Address</Text>
-          <TextInput
-            value={farmer.address}
-            onChangeText={(text) => handleChange("address", text)}
-            editable={isEditing}
-            multiline
-            numberOfLines={3}
-            placeholder="Enter address"
-            className={`border-b-2 ${
-              isEditing ? "border-[#90A955]" : "border-gray-300"
-            } p-2 text-base ${!isEditing ? "text-gray-500" : ""}`}
-            placeholderTextColor="#888"
-          />
-        </View>
-
-        {/* ✅ Buttons */}
-        <View className="flex-row justify-between">
-          <TouchableOpacity
-            onPress={isEditing ? handleCancelEdit : () => setIsEditing(true)}
-            className={`flex-1 py-3 rounded-xl mr-2 ${
-              isEditing ? "bg-[#BC4749]" : "bg-[#31572C]"
-            }`}
-            activeOpacity={0.8}
-          >
-            <Text className="text-white text-lg font-semibold text-center">
-              {isEditing ? "Cancel Edit" : "Edit Profile"}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={handleSave}
-            disabled={!isEditing || loading}
-            className={`flex-1 py-3 rounded-xl ml-2 ${
-              isEditing ? "bg-[#90A955]" : "bg-gray-400"
-            }`}
-            activeOpacity={0.8}
-          >
-            {loading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text className="text-white text-lg font-semibold text-center">
-                Save Profile
-              </Text>
-            )}
-          </TouchableOpacity>
-        </View>
+      {/* Full Name */}
+      <View className="mb-4">
+        <Text className="text-[#31572C] font-medium">Full Name</Text>
+        <TextInput
+          value={farmer.fullName}
+          onChangeText={(text) => handleChange("fullName", text)}
+          editable={isEditing}
+          placeholder="Enter full name"
+          className={`border-b-2 ${
+            isEditing ? "border-[#90A955]" : "border-gray-300"
+          } p-2 text-base ${!isEditing ? "text-gray-500" : ""}`}
+          placeholderTextColor="#888"
+        />
       </View>
 
-      <Toast />
-    </ScrollView>
-  );
+      {/* Phone */}
+      <View className="mb-4">
+        <Text className="text-[#31572C] font-medium">Phone Number</Text>
+        <TextInput
+          value={farmer.phone}
+          onChangeText={(text) => handleChange("phone", text)}
+          editable={isEditing}
+          placeholder="Enter phone number"
+          keyboardType="phone-pad"
+          className={`border-b-2 ${
+            isEditing ? "border-[#90A955]" : "border-gray-300"
+          } p-2 text-base ${!isEditing ? "text-gray-500" : ""}`}
+          placeholderTextColor="#888"
+        />
+      </View>
+
+      {/* Email */}
+      <View className="mb-4">
+        <Text className="text-[#31572C] font-medium">Email</Text>
+        <TextInput
+          value={farmer.email}
+          editable={false}
+          className="border-b-2 border-gray-300 p-2 text-base text-gray-500"
+        />
+      </View>
+
+      {/* Pin Code */}
+      <View className="mb-4">
+        <Text className="text-[#31572C] font-medium">Pin Code</Text>
+        <TextInput
+          value={farmer.pinCode}
+          onChangeText={(text) => handleChange("pinCode", text)}
+          editable={isEditing}
+          keyboardType="numeric"
+          placeholder="Enter 6-digit pin code"
+          maxLength={6}
+          className={`border-b-2 ${
+            isEditing ? "border-[#90A955]" : "border-gray-300"
+          } p-2 text-base ${!isEditing ? "text-gray-500" : ""}`}
+          placeholderTextColor="#888"
+        />
+      </View>
+
+      {/* Address */}
+      <View className="mb-6">
+        <Text className="text-[#31572C] font-medium">Address</Text>
+        <TextInput
+          value={farmer.address}
+          onChangeText={(text) => handleChange("address", text)}
+          editable={isEditing}
+          multiline
+          numberOfLines={3}
+          placeholder="Enter address"
+          className={`border-b-2 ${
+            isEditing ? "border-[#90A955]" : "border-gray-300"
+          } p-2 text-base ${!isEditing ? "text-gray-500" : ""}`}
+          placeholderTextColor="#888"
+        />
+      </View>
+
+      {/* Buttons */}
+      <View className="flex-row justify-between">
+        <TouchableOpacity
+          onPress={isEditing ? handleCancelEdit : () => setIsEditing(true)}
+          className={`flex-1 py-3 rounded-xl mr-2 ${
+            isEditing ? "bg-[#BC4749]" : "bg-[#31572C]"
+          }`}
+          activeOpacity={0.8}
+        >
+          <Text className="text-white text-lg font-semibold text-center">
+            {isEditing ? "Cancel Edit" : "Edit Profile"}
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={handleSave}
+          disabled={!isEditing || loading}
+          className={`flex-1 py-3 rounded-xl ml-2 ${
+            isEditing ? "bg-[#90A955]" : "bg-gray-400"
+          }`}
+          activeOpacity={0.8}
+        >
+          {loading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text className="text-white text-lg font-semibold text-center">
+              Save Profile
+            </Text>
+          )}
+        </TouchableOpacity>
+      </View>
+    </View>
+
+    <Toast />
+  </KeyboardAwareScrollView>
+);
+
 }
