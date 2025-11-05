@@ -1,8 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   Image,
   KeyboardAvoidingView,
@@ -11,21 +10,21 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
+import { OtpInput } from "react-native-otp-entry";
 
 export default function OTPPage() {
   const { uniqueId } = useLocalSearchParams();
   const router = useRouter();
-
   const length = 6;
-  const [otp, setOtp] = useState(Array(length).fill(""));
+
+  const [otp, setOtp] = useState("");
   const [attemptsLeft, setAttemptsLeft] = useState(3);
   const [message, setMessage] = useState("");
   const [disabled, setDisabled] = useState(false);
   const [resendDisabled, setResendDisabled] = useState(false);
   const [timer, setTimer] = useState(30);
-  const inputsRef = useRef([]);
 
-  // ⏱ Timer countdown
+  // TIMER
   useEffect(() => {
     let interval;
     if (resendDisabled && timer > 0) {
@@ -37,20 +36,17 @@ export default function OTPPage() {
     return () => clearInterval(interval);
   }, [resendDisabled, timer]);
 
-  // 📩 Send OTP when component loads
+  // SEND OTP ON LOAD ✅
   useEffect(() => {
     const sendOtp = async () => {
       try {
         const res = await fetch(
           `https://ayur-sathi.vercel.app/api/mobile/send-otp/${uniqueId}`,
-          {
-            method: "POST",
-          }
+          { method: "POST" }
         );
         const data = await res.json();
-        setMessage(data.message || "OTP sent to your email.");
+        setMessage(data.message || "📩 OTP sent to your email.");
         setResendDisabled(true);
-        setTimer(30);
       } catch {
         setMessage("❌ Failed to send OTP.");
       }
@@ -58,9 +54,9 @@ export default function OTPPage() {
     if (uniqueId) sendOtp();
   }, [uniqueId]);
 
-  // ✅ Verify OTP
+  // VERIFY ✅
   const handleVerify = async () => {
-    if (disabled) return;
+    if (disabled || otp.length !== length) return;
     setDisabled(true);
 
     try {
@@ -69,169 +65,150 @@ export default function OTPPage() {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ otp: otp.join("") }),
+          body: JSON.stringify({ otp }),
         }
       );
-
       const data = await res.json();
       console.log(data);
 
       if (res.ok) {
-        setMessage("✅ OTP verified successfully! Logging you in...");
-
+        setMessage("✅ OTP Verified! Logging in...");
         setTimeout(() => {
-          const userType = data.account?.type; 
+          const userType = data.account?.type;
           if (userType === "farmer") {
             router.replace("/(farmer)/home");
           } else {
-            router.replace("/(tabs)/home");
+            router.replace("/(user)/marketplace");
           }
-        }, 1500);
+        }, 1400);
       } else {
-        const remaining = attemptsLeft - 1;
-        setAttemptsLeft(remaining);
+        const remain = attemptsLeft - 1;
+        setAttemptsLeft(remain);
         setDisabled(false);
+        setOtp("");
 
-        if (remaining > 0) {
-          setMessage(`❌ Incorrect OTP. ${remaining} attempt(s) left.`);
+        if (remain > 0) {
+          setMessage(`❌ Wrong OTP! ${remain} attempts left.`);
         } else {
-          setMessage("❌ Registration failed. Redirecting...");
+          setMessage("❌ Too many attempts! Redirecting...");
           setTimeout(() => router.replace("/register"), 2000);
         }
       }
     } catch (err) {
-      console.error(err);
-      setMessage("⚠️ Server error. Please try again.");
+      console.log(err);
+      setMessage("⚠️ Server error! Try again later.");
       setDisabled(false);
+      setOtp("");
     }
   };
 
-  // 🔢 Handle OTP input
-  const handleChange = (val, index) => {
-    if (/^\d?$/.test(val)) {
-      const newOtp = [...otp];
-      newOtp[index] = val;
-      setOtp(newOtp);
-
-      // Move to next input after typing
-      if (val && index < length - 1) {
-        setTimeout(() => {
-          if (inputsRef.current[index + 1]) {
-            inputsRef.current[index + 1].focus();
-          }
-        }, 100); // small delay helps React update refs first
-      }
-    }
-  };
-
-  // ⌫ Handle backspace navigation
-  const handleKeyPress = ({ nativeEvent }, index) => {
-    if (nativeEvent.key === "Backspace" && !otp[index] && index > 0) {
-      inputsRef.current[index - 1]?.focus();
-    }
-  };
-
-  // 🔁 Resend OTP
+  // RESEND ✅
   const handleResend = async () => {
     try {
       const res = await fetch(
         `https://ayur-sathi.vercel.app/api/mobile/resend-otp/${uniqueId}`,
-        {
-          method: "POST",
-        }
+        { method: "POST" }
       );
       const data = await res.json();
-
-      if (!res.ok) {
-        setMessage(data.error || "❌ Failed to resend OTP.");
-        return;
-      }
-
-      setResendDisabled(true);
+      if (!res.ok) return setMessage("❌ Failed to resend!");
+      setOtp("");
+      setMessage("📩 OTP resent!");
       setTimer(30);
-      setMessage(data.message || "📩 OTP resent. Please check your email.");
+      setResendDisabled(true);
     } catch {
-      setMessage("❌ Failed to resend OTP.");
+      setMessage("❌ Couldn't resend OTP.");
     }
   };
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1 justify-center items-center bg-[#f5f8cc]/50 px-4"
+      className="flex-1 bg-[#f5f8cc] justify-center px-4"
     >
       <ScrollView
-        contentContainerStyle={{
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ alignItems: "center" }}
+        keyboardShouldPersistTaps="handled"
       >
-        {/* Logo + Title */}
-        <View className="items-center mb-6 mt-6">
-          <Image
-            source={require("../../src/assets/images/logo.png")}
-            className="h-12 w-12 rounded-lg"
-          />
-          <Text className="mt-3 text-2xl font-bold text-[#4F772D]">
-            Verify Your Account
-          </Text>
-          <Text className="text-sm text-gray-500 text-center">
-            Enter the {length}-digit code sent to your email
-          </Text>
-        </View>
+        {/* ✅ Header */}
+        <Image
+          source={require("../../src/assets/images/logo.png")}
+          className="h-14 w-14 rounded-xl mt-2"
+        />
+        <Text className="text-2xl font-bold text-[#4F772D] mt-2">
+          Verify Your Account
+        </Text>
+        <Text className="text-gray-500 text-sm mb-5">
+          Enter the {length}-digit OTP sent to your email
+        </Text>
 
-        {/* Message */}
-        {message ? (
-          <Text className="text-center text-sm font-medium text-gray-700 mb-4">
+        {/* ✅ Server Message */}
+        {message !== "" && (
+          <Text className="mb-3 text-center text-sm font-medium text-[#374151]">
             {message}
           </Text>
-        ) : null}
+        )}
 
-        {/* OTP Inputs */}
-        <View className="flex-row justify-center mb-6 space-x-2">
-          {otp.map((digit, index) => (
-            <TextInput
-              key={index}
-              value={digit}
-              onChangeText={(val) => handleChange(val, index)}
-              onKeyPress={(e) => handleKeyPress(e, index)}
-              ref={(el) => (inputsRef.current[index] = el)}
-              keyboardType="numeric"
-              maxLength={1}
-              editable={!disabled}
-              className="w-12 h-14 text-center text-lg font-semibold border border-gray-300 rounded-lg shadow-sm bg-white"
-            />
-          ))}
-        </View>
+        {/* ✅ OTP INPUT */}
+        <OtpInput
+          numberOfDigits={6}
+          onTextChange={setOtp}
+          autoFocus
+          disabled={disabled}
+          focusColor="#4F772D"
+          theme={{
+            pinCodeContainerStyle: {
+              width: 50,
+              height: 60,
+              borderRadius: 10,
+              backgroundColor: "white",
+              borderWidth: 2,
+              borderColor: "#D1D5DB",
+            },
+            focusedPinCodeContainerStyle: {
+              borderColor: "#4F772D",
+              shadowColor: "#4F772D",
+            },
+            filledPinCodeContainerStyle: {
+              borderColor: "#4F772D",
+              backgroundColor: "#E9F5D6",
+            },
+            pinCodeTextStyle: {
+              fontSize: 20,
+              fontWeight: "600",
+              color: "#1B4332",
+            },
+          }}
+        />
 
-        {/* Verify Button */}
+        {/* ✅ Verify Button */}
         <TouchableOpacity
           onPress={handleVerify}
-          disabled={otp.some((d) => d === "") || disabled}
-          className={`w-full py-3 rounded-md shadow-lg ${
-            otp.some((d) => d === "") || disabled
+          disabled={otp.length !== length || disabled}
+          className={`w-full py-3 mt-6 rounded-lg ${
+            otp.length !== length || disabled
               ? "bg-gray-300"
-              : "bg-[#90a955]"
+              : "bg-[#4F772D]"
           }`}
         >
           {disabled ? (
-            <ActivityIndicator color="#fff" />
+            <ActivityIndicator color="white" />
           ) : (
-            <Text className="text-white text-lg font-medium text-center">
+            <Text className="text-center text-white font-medium text-lg">
               Verify OTP
             </Text>
           )}
         </TouchableOpacity>
 
-        {/* Resend OTP */}
+        {/* ✅ Resend */}
         <TouchableOpacity
           onPress={handleResend}
           disabled={resendDisabled}
-          className="mt-4 w-full py-3 rounded-md border border-[#90a955] disabled:opacity-50"
+          className="mt-4 py-3 w-full border border-[#4F772D] rounded-lg"
         >
-          <Text className="text-[#4F772D] text-center font-medium">
-            {resendDisabled ? `Resend OTP in ${timer}s` : "Resend OTP"}
+          <Text className="text-center text-[#365314] font-medium">
+            {resendDisabled
+              ? `Resend OTP in ${timer}s`
+              : "Resend OTP"}
           </Text>
         </TouchableOpacity>
       </ScrollView>

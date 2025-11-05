@@ -38,7 +38,7 @@
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ECF39E",
-          "dark" : {
+          "dark": {
             "image": "./src/assets/images/icon.png",
             "backgroundColor": "#ECF39E"
           }
@@ -48,6 +48,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "f882aeeb-8136-43f3-a00d-992bae4a0c37"
+      }
     }
   }
 }
