@@ -26,7 +26,7 @@ function RootNavigator() {
       />
 
       {/* ✅ Toast MUST be inside Provider area */}
-      <Toast />
+      
     </>
   );
 }
@@ -37,6 +37,7 @@ export default function RootLayout() {
       <CropProvider>
         <SafeAreaProvider>
           <RootNavigator />
+          
         </SafeAreaProvider>
       </CropProvider>
     </AuthProvider>

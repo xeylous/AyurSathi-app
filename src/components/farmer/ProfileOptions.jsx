@@ -9,7 +9,7 @@ const options = [
   { id: 1, title: "Edit Profile", route: "/farmer/EditProfile" },
   { id: 2, title: "My Address", route: "/farmer/MyAddress" },
   { id: 3, title: "Appearance", route: "/farmer/Appearance" },
-  { id: 4, title: "Feedback", route: "/farmer/Feedback" },
+  { id: 4, title: "Order History", route: "/OrderHistory" },
   { id: 5, title: "Raise a Complaint", route: "/farmer/Complaint" },
 ];
 

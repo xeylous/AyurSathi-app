@@ -12,15 +12,20 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 
+const lightGrey = "#D3D3D3"; // Define lightGrey color if it's not declared globally.
+
 export default function OTPPage({ length = 6, uniqueId, onClose }) {
   const router = useRouter();
-  const [otp, setOtp] = useState(Array(length).fill(""));
+  const [otp, setOtp] = useState(['-', '-', '-', '-', '-', '-']);
+  const [otpVal, setOtpVal] = useState('');
   const [attemptsLeft, setAttemptsLeft] = useState(3);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
   const [disabled, setDisabled] = useState(false);
   const [resendDisabled, setResendDisabled] = useState(false);
   const [timer, setTimer] = useState(30);
-  const inputsRef = useRef([]);
+
+  // Refs for each OTP input box
+  const inputRefs = useRef([]);
 
   // Timer countdown
   useEffect(() => {
@@ -85,22 +90,24 @@ export default function OTPPage({ length = 6, uniqueId, onClose }) {
     }
   };
 
-  // Handle OTP input
-  const handleChange = (val, index) => {
-    if (/^\d?$/.test(val)) {
-      const newOtp = [...otp];
-      newOtp[index] = val;
-      setOtp(newOtp);
-      if (val && index < length - 1) {
-        inputsRef.current[index + 1]?.focus();
-      }
+  // Handle OTP input change
+  const handleChange = (val) => {
+    if (isNaN(val)) {
+      return;
     }
+    if (val.length > 6) {
+      return;
+    }
+    let newVal = val + '------'.substr(0, 6 - val.length);
+    let updatedOtp = [...newVal];
+    setOtpVal(newVal);
+    setOtp(updatedOtp);
   };
 
-  // Handle backspace navigation
-  const handleKeyPress = ({ nativeEvent }, index) => {
-    if (nativeEvent.key === "Backspace" && !otp[index] && index > 0) {
-      inputsRef.current[index - 1]?.focus();
+  // Handle key press for backspace and focus management
+  const handleKeyPress = (e) => {
+    if (e.nativeEvent.key === 'Backspace' && otpVal.length === 0) {
+      inputRefs.current[otpVal.length - 1]?.focus();
     }
   };
 
@@ -128,7 +135,7 @@ export default function OTPPage({ length = 6, uniqueId, onClose }) {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1 justify-center items-center bg-white rounded-2xl p-6"
+      style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "white", borderRadius: 16, padding: 24 }}
     >
       <ScrollView
         contentContainerStyle={{ alignItems: "center", justifyContent: "center" }}
@@ -137,65 +144,66 @@ export default function OTPPage({ length = 6, uniqueId, onClose }) {
         {/* Close Button */}
         <TouchableOpacity
           onPress={onClose}
-          className="absolute right-3 top-3 z-10"
+          style={{ position: "absolute", right: 12, top: 12, zIndex: 10 }}
         >
-          <Text className="text-gray-500 text-xl">✕</Text>
+          <Text style={{ fontSize: 24, color: "gray" }}>✕</Text>
         </TouchableOpacity>
 
         {/* Logo + Title */}
-        <View className="items-center mb-6 mt-6">
+        <View style={{ alignItems: "center", marginBottom: 24, marginTop: 24 }}>
           <Image
             source={require("../assets/images/logo.png")}
-            className="h-12 w-12 rounded-lg"
+            style={{ height: 48, width: 48, borderRadius: 12 }}
           />
-          <Text className="mt-3 text-2xl font-bold text-[#4F772D]">
+          <Text style={{ marginTop: 12, fontSize: 24, fontWeight: "bold", color: "#4F772D" }}>
             Verify Your Account
           </Text>
-          <Text className="text-sm text-gray-500 text-center">
+          <Text style={{ fontSize: 14, color: "gray", textAlign: "center" }}>
             Enter the {length}-digit code sent to your email/phone
           </Text>
         </View>
 
         {/* Message */}
         {message ? (
-          <Text className="text-center text-sm font-medium text-gray-700 mb-4">
+          <Text style={{ textAlign: "center", fontSize: 14, fontWeight: "500", color: "gray", marginBottom: 16 }}>
             {message}
           </Text>
         ) : null}
 
-        {/* OTP Inputs */}
-        <View className="flex-row justify-center mb-6 space-x-2">
+        {/* OTP Input */}
+        <TextInput
+          onChangeText={handleChange}
+          value={otpVal}
+          style={{ height: 0 }}
+          autoFocus={true}
+        />
+        <View style={{ flexDirection: 'row' }}>
           {otp.map((digit, index) => (
-            <TextInput
-              key={index}
-              value={digit}
-              onChangeText={(val) => handleChange(val, index)}
-              onKeyPress={(e) => handleKeyPress(e, index)}
-              ref={(el) => (inputsRef.current[index] = el)}
-              keyboardType="numeric"
-              maxLength={1}
-              editable={!disabled}
-              className="w-12 h-14 text-center text-lg font-semibold border rounded-lg shadow-sm"
-            />
+            <Text style={styles.otpBox} key={index}>
+              {digit}
+            </Text>
           ))}
         </View>
 
         {/* Verify Button */}
         <TouchableOpacity
           onPress={handleVerify}
-          disabled={otp.some((d) => d === "") || disabled}
-          className={`w-full py-3 rounded-md shadow-lg ${
-            otp.some((d) => d === "") || disabled
-              ? "bg-gray-300"
-              : "bg-[#90a955]"
-          }`}
+          disabled={otp.some((d) => d === '-') || disabled}
+          style={{
+            width: "100%",
+            paddingVertical: 12,
+            borderRadius: 8,
+            backgroundColor: otp.some((d) => d === '-') || disabled ? "gray" : "#90a955",
+            marginTop: 16,
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.2,
+            shadowRadius: 5,
+          }}
         >
           {disabled ? (
             <ActivityIndicator color="#fff" />
           ) : (
-            <Text className="text-white text-lg font-medium text-center">
-              Verify
-            </Text>
+            <Text style={{ textAlign: "center", fontSize: 18, color: "#fff" }}>Verify</Text>
           )}
         </TouchableOpacity>
 
@@ -203,9 +211,17 @@ export default function OTPPage({ length = 6, uniqueId, onClose }) {
         <TouchableOpacity
           onPress={handleResend}
           disabled={resendDisabled}
-          className="mt-4 w-full py-3 rounded-md border border-[#90a955] disabled:opacity-50"
+          style={{
+            marginTop: 16,
+            width: "100%",
+            paddingVertical: 12,
+            borderRadius: 8,
+            borderWidth: 1,
+            borderColor: "#90a955",
+            opacity: resendDisabled ? 0.5 : 1,
+          }}
         >
-          <Text className="text-[#4F772D] text-center font-medium">
+          <Text style={{ textAlign: "center", fontSize: 16, color: "#4F772D" }}>
             {resendDisabled ? `Resend OTP in ${timer}s` : "Resend OTP"}
           </Text>
         </TouchableOpacity>
@@ -213,3 +229,19 @@ export default function OTPPage({ length = 6, uniqueId, onClose }) {
     </KeyboardAvoidingView>
   );
 }
+
+const styles = {
+  otpBoxesContainer: {
+    flexDirection: 'row',
+  },
+  otpBox: {
+    padding: 10,
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: lightGrey,
+    height: 45,
+    width: 45,
+    textAlign: 'center',
+    fontSize: 18,
+  }
+};
