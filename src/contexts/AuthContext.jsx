@@ -6,10 +6,13 @@ const AuthContext = createContext();
 // Provider component
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-// console.log(user);
+
+  const logout = () => {
+    setUser(null); // ✅ clears user authentication data
+  };
 
   return (
-    <AuthContext.Provider value={{ user, setUser }}>
+    <AuthContext.Provider value={{ user, setUser, logout }}>
       {children}
     </AuthContext.Provider>
   );
@@ -17,4 +20,5 @@ export const AuthProvider = ({ children }) => {
 
 // Hook to use context anywhere
 export const useAuth = () => useContext(AuthContext);
-     
+
+export default AuthContext;
