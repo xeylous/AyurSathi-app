@@ -11,9 +11,11 @@ import {
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { OtpInput } from "react-native-otp-entry";
+import { useAuth } from "../../src/contexts/AuthContext";
 
 export default function OTPPage() {
   const { uniqueId } = useLocalSearchParams();
+  const { saveUser } = useAuth();
   const router = useRouter();
   const length = 6;
 
@@ -73,6 +75,15 @@ export default function OTPPage() {
 
       if (res.ok) {
         setMessage("✅ OTP Verified! Logging in...");
+        await saveUser({
+          name: data.account?.name,
+          email: data.account?.email || null,
+          uniqueId: data.account?.uniqueId || uniqueId || null,
+          type: data.account?.type,
+          verified: true,
+          token: data.token ?? undefined, // <-- include if your API returns it
+        });
+
         setTimeout(() => {
           const userType = data.account?.type;
           if (userType === "farmer") {
@@ -185,9 +196,7 @@ export default function OTPPage() {
           onPress={handleVerify}
           disabled={otp.length !== length || disabled}
           className={`w-full py-3 mt-6 rounded-lg ${
-            otp.length !== length || disabled
-              ? "bg-gray-300"
-              : "bg-[#4F772D]"
+            otp.length !== length || disabled ? "bg-gray-300" : "bg-[#4F772D]"
           }`}
         >
           {disabled ? (
@@ -206,9 +215,7 @@ export default function OTPPage() {
           className="mt-4 py-3 w-full border border-[#4F772D] rounded-lg"
         >
           <Text className="text-center text-[#365314] font-medium">
-            {resendDisabled
-              ? `Resend OTP in ${timer}s`
-              : "Resend OTP"}
+            {resendDisabled ? `Resend OTP in ${timer}s` : "Resend OTP"}
           </Text>
         </TouchableOpacity>
       </ScrollView>

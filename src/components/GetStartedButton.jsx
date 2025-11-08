@@ -1,21 +1,12 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 
 export default function GetStartedButton() {
-  const insets = useSafeAreaInsets();
   const router = useRouter();
 
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          paddingBottom: insets.bottom,
-        },
-      ]}
-    >
+    <View style={styles.container}>
       <TouchableOpacity
         style={styles.button}
         activeOpacity={0.8}
@@ -29,15 +20,17 @@ export default function GetStartedButton() {
 
 const styles = StyleSheet.create({
   container: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: "#8fa854", // light greenish tone
-    height: 60,
+    backgroundColor: "#8fa854",
+    height: 50,
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 16,
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 3, // Android shadow
+    bottom: 10,
   },
   button: {
     flex: 1,

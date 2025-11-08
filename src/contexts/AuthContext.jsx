@@ -1,24 +1,48 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
+import * as SecureStore from "expo-secure-store";
 
-// Create the context
 const AuthContext = createContext();
 
-// Provider component
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const logout = () => {
-    setUser(null); // ✅ clears user authentication data
+  // Save user securely after login
+  const saveUser = async (userData) => {
+    await SecureStore.setItemAsync("authUser", JSON.stringify(userData));
+    setUser(userData);
   };
 
+  // Load user on app startup
+  const loadUser = async () => {
+    try {
+      const storedUser = await SecureStore.getItemAsync("authUser");
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    } catch (error) {
+      console.log("Error loading user:", error);
+    }
+    setLoading(false);
+  };
+
+  // Logout function
+  const logout = async () => {
+    await SecureStore.deleteItemAsync("authUser");
+    setUser(null);
+  };
+
+  useEffect(() => {
+    loadUser();
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, setUser, logout }}>
-      {children}
+    <AuthContext.Provider value={{ user, saveUser, logout, loading }}>
+      {!loading && children} 
     </AuthContext.Provider>
   );
 };
 
-// Hook to use context anywhere
 export const useAuth = () => useContext(AuthContext);
 
 export default AuthContext;

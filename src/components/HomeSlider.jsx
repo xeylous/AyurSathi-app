@@ -44,15 +44,15 @@ const HeroSlider = () => {
     const IconComponent = item.icon;
     const VectorComponent = item.vector;
     return (
-      <View style={{ width, borderBottomLeftRadius: 60, borderBottomRightRadius: 60 }} className="bg-[#90A955] relative overflow-hidden">
+      <View style={{ width, borderBottomLeftRadius: 60, borderBottomRightRadius: 60, top: -10 }} className="bg-[#90A955] relative overflow-hidden">
         {/* Large decorative vector in background */}
         <View style={{ 
           position: 'absolute', 
-          right: -20, 
-          bottom: -20,
+          right: 10, 
+          bottom: 10,
           opacity: 0.15 
         }}>
-          <VectorComponent size={140} color="#ffffff" />
+          <VectorComponent size={100} color="#ffffff" />
         </View>
 
         <View style={{ 
