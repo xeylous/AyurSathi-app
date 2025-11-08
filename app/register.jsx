@@ -150,7 +150,7 @@ export default function RegisterScreen() {
           <TextInput
             value={formData.name}
             onChangeText={(val) => handleChange("name", val)}
-            className="mt-1 w-full px-3 py-2 rounded-md border border-gray-300"
+            className="mt-1 w-full px-3 py-2 rounded-md border text-zinc-800 border-gray-300"
             placeholder="Full Name"
           />
         </View>
@@ -162,7 +162,7 @@ export default function RegisterScreen() {
             value={formData.email}
             onChangeText={(val) => handleChange("email", val)}
             keyboardType="email-address"
-            className="mt-1 w-full px-3 py-2 rounded-md border border-gray-300"
+            className="mt-1 w-full px-3 py-2 rounded-md border text-zinc-800 border-gray-300"
             placeholder="xyz@example.com"
           />
         </View>
@@ -175,7 +175,7 @@ export default function RegisterScreen() {
               value={formData.password}
               onChangeText={(val) => handleChange("password", val)}
               secureTextEntry={!showPassword}
-              className="flex-1 mt-1 px-3 py-2 rounded-md border border-gray-300"
+              className="flex-1 mt-1 px-3 py-2 rounded-md border text-gray-700 border-gray-300"
               placeholder="••••••••"
             />
             <TouchableOpacity onPress={() => setShowPassword(!showPassword)} className="absolute right-3 top-4">
@@ -192,7 +192,7 @@ export default function RegisterScreen() {
               value={formData.confirmPassword}
               onChangeText={(val) => handleChange("confirmPassword", val)}
               secureTextEntry={!showConfirm}
-              className="flex-1 mt-1 px-3 py-2 rounded-md border border-gray-300"
+              className="flex-1 mt-1 px-3 py-2 rounded-md border text-zinc-800 border-gray-300"
               placeholder="••••••••"
             />
             <TouchableOpacity onPress={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-4">

@@ -17,7 +17,8 @@ import Toast from "react-native-toast-message";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function LoginScreen() {
-  const { setUser } = useAuth();
+  // const { setUser } = useAuth();
+  const { saveUser } = useAuth();
   const router = useRouter();
   const [mode, setMode] = useState("user");
   const [email, setEmail] = useState("");
@@ -83,7 +84,7 @@ export default function LoginScreen() {
       }
 
       // ✅ Store user in context
-      setUser({
+      saveUser({
         name: data.account.name,
         email: data.account.email || null,
         uniqueId: data.account.uniqueId || null,
@@ -241,7 +242,8 @@ export default function LoginScreen() {
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}
                 placeholder="••••••••"
-                className="w-full px-3 py-3 rounded-md border border-gray-300 bg-white pr-12 placeholder:font-bold"
+                placeholderTextColor="#6b7280"
+                className="w-full px-3 py-3 rounded-md border border-gray-300 bg-white pr-12 text-gray-700 "
               />
               <TouchableOpacity
                 onPress={() => setShowPassword(!showPassword)}

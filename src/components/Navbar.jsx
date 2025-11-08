@@ -11,12 +11,12 @@ const Navbar = () => {
 
   const handleScanPress = () => {
     // Navigate to scan/cop history page
-    // router.push("/scan-history");
+    router.push("/scan");
   };
 
   const handleSearchPress = () => {
     // Navigate to batch search page
-    // router.push("/batch-search");
+    router.push("/search-details");
   };
 
   return (
