@@ -37,8 +37,9 @@ export default function RootLayout() {
   useEffect(() => {
   async function setupNavBar() {
     try {
+      NavigationBar.setBackgroundColorAsync("#000000");
       await NavigationBar.setButtonStyleAsync("dark");
-      await SystemUI.setBackgroundColorAsync("#000");
+      await SystemUI.setBackgroundColorAsync("#000000");
     } catch (e) {
       console.log("Navigation bar setup error:", e);
     }
