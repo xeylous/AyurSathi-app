@@ -22,7 +22,7 @@ export default function Index() {
         <View>
           <AnalyticsChart />
           <FeaturesGrid />
-          <HerbsShowcase />
+          {/* <HerbsShowcase /> */}
         </View>
       </ScrollView>
 

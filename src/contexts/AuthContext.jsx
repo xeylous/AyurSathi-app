@@ -3,19 +3,19 @@ import * as SecureStore from "expo-secure-store";
 import { View } from "react-native";
 import { useRouter } from "expo-router";
 
-const AuthContext = createContext({
+ const AuthContext = createContext({
   user: null,
   saveUser: () => {},
   logout: () => {},
   hydrated: false,
 });
 
+export const useAuth = () => useContext(AuthContext);
+
+// export default AuthContext;
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [hydrated, setHydrated] = useState(false);
-  const [navigated, setNavigated] = useState(false);
-  console.log(user);
-  
   const router = useRouter();
 
   const handleRedirect = (type) => {
@@ -27,7 +27,6 @@ export const AuthProvider = ({ children }) => {
       } else {
         router.replace("/");
       }
-      setNavigated(true);
     });
   };
 
@@ -62,8 +61,8 @@ export const AuthProvider = ({ children }) => {
     })();
   }, []);
 
-  // ✅ Show theme color while preparing
-  if (!hydrated || !navigated) {
+  // ✅ Render children once hydrated
+  if (!hydrated) {
     return <View className="flex-1 bg-[#f5f8cc]" />;
   }
 
@@ -73,6 +72,3 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-
-export const useAuth = () => useContext(AuthContext);
-export default AuthContext;
