@@ -15,18 +15,34 @@ import { useAuth } from "../../src/contexts/AuthContext";
 import { useCrops } from "../../src/contexts/CropContext";
 
 export default function CropHistory() {
-  const { user } = useAuth();
-  const { cropHistory, fetchCropHistory, isFetching } = useCrops();
+  const { user, hydrated } = useAuth();
+  const cropsContext = useCrops();
   const [expandedId, setExpandedId] = useState(null);
+
+console.log("✅ Debug => hydrated:", hydrated, "cropsContext:", cropsContext);
+
+  // ✅ Wait for context to be ready
+  if (!hydrated || !cropsContext) {
+    return (
+      <View className="flex-1 items-center justify-center bg-[#f5f8cc]">
+        <ActivityIndicator size="large" color="#4F772D" />
+        <Text className="mt-3 text-[#4F772D] text-lg font-semibold">
+          Loading crop history...
+        </Text>
+      </View>
+    );
+  }
+
+  const { cropHistory = [], fetchCropHistory, isFetching } = cropsContext;
   const uniqueId = user?.uniqueId || null;
 
-  // ✅ Re-fetch when user opens tab
+  // ✅ Safe refetch
   useFocusEffect(
     useCallback(() => {
-      if (uniqueId) {
+      if (hydrated && uniqueId) {
         fetchCropHistory(uniqueId);
       }
-    }, [uniqueId])
+    }, [hydrated, uniqueId])
   );
 
   const toggleExpand = (id) => {
