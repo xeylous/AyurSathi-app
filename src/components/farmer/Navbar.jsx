@@ -12,7 +12,7 @@ const isProfileActive = ["/profile", "/farmer/EditProfile", "/farmer/MyAddress",
   const isSearchActive = pathname === "/search";
 
   const handleSearchPress = () => {
-    if (!isSearchActive) router.push("/search");
+    if (!isSearchActive) router.push("/search-details");
   };
 
   const handleProfilePress = () => {
