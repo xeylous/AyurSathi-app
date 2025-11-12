@@ -19,7 +19,7 @@ export default function CropHistory() {
   const cropsContext = useCrops();
   const [expandedId, setExpandedId] = useState(null);
 
-console.log("✅ Debug => hydrated:", hydrated, "cropsContext:", cropsContext);
+// console.log("✅ Debug => hydrated:", hydrated, "cropsContext:", cropsContext);
 
   // ✅ Wait for context to be ready
   if (!hydrated || !cropsContext) {
